@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+
+function foo(args) {
+    var pargs = Object.create(args);
+    pargs.foo = 27;
+    alert(args.toSource());
+    alert(pargs.toSource());
+}
+
+
+foo({ foo: 1, bar: 2 });
+
+alert(location.toSource());
+
+
+
+</script>
+</head>
+<body>
+</body>
+</html>

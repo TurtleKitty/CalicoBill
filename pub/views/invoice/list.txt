@@ -1,0 +1,30 @@
+
+<div class="place">
+
+<table>
+    <thead>
+	<tr> <th> Invoice ID </th> <th> Date </th> <th> Amount </th> <th> view </th> </tr>
+    </thead>
+    <tbody>
+
+	{{#invoices}}
+	    <tr>
+		<td> {{ id }} </td>
+		<td> {{ created }} </td>
+		<td> {{ amount }} </td>
+		<td> <a href="{{ path }}/invoice/view.html?id={{ id }}"> view invoice </a> </td>
+	    </tr>
+	{{/invoices}}
+
+	{{^invoices}}
+	    <tr> <td colspan="4"> No invoices found. </td> </tr>
+	{{/invoices}}
+
+    </tbody>
+    <tfoot>
+        <tr> <td colspan="4" style="text-align: right"> <button id="add_invoice"> Add Invoice </button> </td> </tr>
+    </tfoot>
+</table>
+
+</div>
+

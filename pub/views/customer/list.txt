@@ -1,0 +1,23 @@
+
+<div class="place">
+
+<table>
+    <thead>
+	<tr> <th> Customer ID </th> <th> Name </th> <th> Email </th> </tr>
+    </thead>
+    <tbody>
+	{{#customers}}
+	    <tr>
+		<td> {{ id }} </td>
+		<td> <a href="{{ path }}/customer/view.html?id={{ id }}"> {{ firstname }} {{ lastname }} </a> </td>
+		<td> {{ email }} </td>
+	    </tr>
+	{{/customers}}
+    </tbody>
+    <tfoot>
+        <tr> <td colspan="3" style="text-align: right"> <button id="add_customer"> Add Customer </button> </td> </tr>
+    </tfoot>
+</table>
+
+</div>
+

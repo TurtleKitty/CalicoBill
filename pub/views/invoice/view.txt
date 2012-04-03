@@ -1,0 +1,87 @@
+
+<div class="place">
+
+    <div>
+
+	<div class="place">
+
+	    <div>
+		Invoice ID: {{ invoice.id }}
+	    </div>
+
+	    <div>
+		Customer: <a href="{{ path }}/customer/view.html?id={{ invoice.customer.id }}">
+		    {{ invoice.customer.firstname }} {{ invoice.customer.lastname }}
+		</a>
+	    </div>
+
+	    <div>
+		Date: {{ invoice.created }}
+	    </div>
+
+	    <div>
+		Amount: {{ invoice.amount }}
+	    </div>
+
+	</div>
+
+    </div>
+
+    <div>
+
+	<span>
+
+	    <div class="place">
+
+		<div> Billing Address: </div>
+
+		<div>
+		    <div> {{ invoice.billing_address.street_addr }} </div>
+		    <div> {{ invoice.billing_address.treet_addr2 }} </div>
+		    <div> {{ invoice.billing_address.city }}, {{ invoice.billing_address.state }} {{ invoice.billing_address.zip }} </div>
+		</div>
+
+	    </div>
+
+	    <div class="place">
+
+		<div> Shipping Address: </div>
+
+		<div>
+		    <div> {{ invoice.shipping_address.street_addr }} </div>
+		    <div> {{ invoice.shipping_address.treet_addr2 }} </div>
+		    <div> {{ invoice.shipping_address.city }}, {{ invoice.shipping_address.state }} {{ invoice.shipping_address.zip }} </div>
+		</div>
+
+	    </div>
+
+	</span>
+
+    </div>
+
+    <div>
+
+	<div class="place">
+
+	    <table>
+		<thead>
+		    <tr> <th> Item </th> <th> Price </th> <th> Quantity </th> <th> Total </th> </tr>
+		</thead>
+		<tbody>
+		    {{#invoice.lineitems}}
+			<tr>
+			    <td> {{ name }} </td>
+			    <td> {{ price }} </td>
+			    <td> {{ quantity }} </td>
+			    <td> {{ total }} </td>
+			</tr>
+		    {{/invoice.lineitems}}
+		</tbody>
+	    </table>
+
+	</div>
+
+    </div>
+
+</div>
+

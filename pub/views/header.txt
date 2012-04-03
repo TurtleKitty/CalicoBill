@@ -1,0 +1,8 @@
+
+<div class="place">
+
+    <h1> CalicoBill </h1>
+
+</div>
+
+<div class="hr"/>

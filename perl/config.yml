@@ -1,0 +1,3 @@
+appname: 'CalicoBill'
+logger: 'file'
+serializer: JSON

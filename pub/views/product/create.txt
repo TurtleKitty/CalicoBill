@@ -1,0 +1,16 @@
+
+<div class="place">
+
+    <form id="product">
+
+	<table>
+	    <tr> <th> Name  </th> <td> <input id="name"  type="text" size="24" maxlength="64" /> </td> </tr>
+	    <tr> <th> Price </th> <td> <input id="price" type="text" size="7"  maxlength="16" /> </td> </tr>
+	    <tr> <th> Description </th> <td> <input id="desc" type="text" size="64" /> </td> </tr>
+	    <tr> <th colspan="2" style="text-align: right"> <button id="create"> Create </button> </th> </tr>
+	</table>
+
+    </form>
+
+</div>
+

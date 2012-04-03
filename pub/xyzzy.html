@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>
+	xyzzy
+    </title>
+
+    <style>
+
+	body {
+	    width: 1500px;
+	    height: 500px;
+	    background: #000;
+	    color: #ffff00;
+	    margin: 40px;
+	    padding: 100px;
+	    border: 1px solid #ff0
+	}
+
+	div {
+	    margin: 10px;
+	    padding: 10px;
+	}
+
+	div.close {
+	    margin: 0px;
+	    padding: 4px;
+	}
+
+	table, th, td {
+	    border: 1px solid #ff0;
+	    border-collapse: collapse;
+	}
+
+	table {
+	    margin: 20px;
+	    padding: 10px;
+	}
+
+	th, td {
+	    margin: 0;
+	    padding: 10px;
+	}
+
+	.mustache-template {
+	    display: none;
+	}
+
+	.showguy {
+	    width: 610;
+	    height: 377;
+	}
+
+    </style>
+
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.simplemodal.js"></script>
+    <script type="text/javascript" src="/js/mustache.js"></script>
+
+    <script type="text/javascript">
+
+	var xyzzy = (function () {
+	    var obj = {
+		templates: { },
+		attributes: [ 'name', 'level', 'brawn', 'brains', 'moves', 'cool' ]
+	    };
+
+	    var modal_options = {
+		closeHTML: 'x',
+		minWidth: 800,
+		minHeight: 600,
+		maxWidth: 1500,
+		maxHeight: 500
+	    };
+
+	    obj.init = function (args) {
+		var n	    = args.templates.length,
+		    done    = 0
+		;
+
+		$.each(
+		    args.templates,
+		    function (idx, tmpl) {
+			$.get(
+			    '/views/' + tmpl + '.mu',
+			    function (data) {
+				obj.templates[tmpl] = data;
+
+				done++;
+
+				if (done == n) {
+				    obj.render();
+				}
+			    }
+			);
+		    }
+		);
+	    };
+
+	    obj.data = {
+		guys: [
+		    { id: 1, name: "Bob", level: 10, brawn: 3, brains: 3, moves: 3, cool: 3, skills: [ 'Warrior', 'Poet' ]  },
+		    { id: 2, name: "Fred", level: 10, brawn: 6, brains: 1, moves: 1, cool: 4, skills: [ 'Cowboy', 'Poet' ] }
+		]
+	    };
+
+	    obj.render = function () {
+		var yarr = [];
+
+		$('#dudetable > tbody').html('');
+
+		$.each(obj.data.guys, function (i, guy) {
+		    guy.index = i;
+		    yarr.push( Mustache.render(obj.templates.listguy, guy) );
+		});
+
+		$('#dudetable > tbody:last').append( yarr.join("\n") );
+	    };
+
+	    obj.show = function (idx) {
+		var guy = obj.data.guys[idx];
+		guy.skillstr = guy.skills.join(', ');
+		$.modal( Mustache.render( obj.templates.showguy, guy ), modal_options );
+	    };
+
+	    obj.create = function () {
+		$.modal( Mustache.render( obj.templates.makeguy, { } ), modal_options );
+
+		$('#dudeform').submit(
+		    function (ev) {
+			ev.preventDefault();
+			xyzzy.submit();
+		    }
+		);
+	    };
+
+	    obj.submit = function () {
+		var newguy = {
+		    skills: [ ]
+		};
+
+		obj.attributes.map(
+		    function (attr) {
+			newguy[attr] = $('#dude' + attr).val();
+		    }
+		);
+
+		$('[name=dudeskill]').each(
+		    function (i, item) {
+			var skill = item.value;
+
+			if ( skill ) {
+			    newguy.skills.push(skill);
+			}
+		    }
+		);
+
+		obj.data.guys.push(newguy);
+
+		obj.render();
+
+		$.modal.close();
+
+		return false;
+	    }
+
+	    return obj;
+	})();
+
+	$(document).ready(
+	    function () {
+		xyzzy.init({
+		    templates: [ 'listguy', 'showguy', 'makeguy' ]
+		});
+	    }
+	);
+
+    </script>
+
+</head>
+
+<body>
+
+    <div>
+	Hello, xyzzy!
+    </div>
+
+    <table id="dudetable">
+
+	<thead>
+	    <tr>
+		<td> ID </td>
+		<td> Name </td>
+		<td> Level </td>
+	    </tr>
+	</thead>
+
+	<tbody>
+	</tbody>
+
+    </table>
+
+    <div>
+	<input type="button" value="New Guy" onclick="xyzzy.create()" />
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+
+<div class="hr"/>
+
+<div class="footer">
+
+    <div id="clock" class="place" style="border: 1px thin #00f"> 
+    </div>
+
+    <div class="place">
+	<a href="/calico"> home </a>
+    </div>
+
+    <script>
+
+	$(document).ready(
+	    function () {
+		$("#clock").html( (new Date()).toString() );
+	    }
+	);
+
+    </script>
+
+</div>

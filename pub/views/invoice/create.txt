@@ -1,0 +1,48 @@
+
+<div class="place">
+
+    <form id="invoice">
+
+	<input type="hidden" id="customer" value="{{ customer }}"/>
+
+	<div class="place">
+
+	    <div> <h2> Shipping Address </h2> </div>
+
+	    <table>
+		<tr> <th rowspan="2"> Address </th> <td> <input id="street_addr" type="text" size="24"  maxlength="128" /> </td> </tr>
+		<tr>				    <td> <input id="street_addr2" type="text" size="24"  maxlength="128" /> </td> </tr>
+		<tr> <th> City </th> <td> <input id="city" type="text" size="24"  maxlength="64" /> </td> </tr>
+		<tr> <th> State </th> <td> <input id="state" type="text" size="24"  maxlength="32" /> </td> </tr>
+		<tr> <th> Zip Code </th> <td> <input id="zip" type="text" size="12"  maxlength="16" /> </td> </tr>
+	    </table>
+
+	</div>
+
+	<div class="place">
+
+	    <table id="lineitems">
+		<thead>
+		    <tr> <th> Product </th> <th> Price </th> <th> Quantity </th> <th> Total </th> </tr>
+		</thead>
+		<tbody>
+		    <tr> <td colspan="4"> </td> </tr>
+		</tbody>
+		<tfoot>
+		    <tr>
+    <td colspan="3" style="text-align: right"> <button id="add_lineitem"> Add Lineitem </button> </td>
+    <td> <span id="grand_total"> 0 </span> </td>
+		    </tr>
+		</tfoot>
+	    </table>
+
+	</div>
+
+	<div class="place">
+	    <button id="create"> Create Invoice </button>
+	</div>
+
+    </form>
+
+</div>
+

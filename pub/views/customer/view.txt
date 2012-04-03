@@ -1,0 +1,31 @@
+
+<div class="place">
+
+    <div>
+	<div>
+	    <h2> {{ customer.firstname }} {{ customer.lastname }} </h2>
+	</div>
+
+	<div>
+	    Customer ID: {{ customer.id }}
+	</div>
+
+	<div>
+	    Email: {{ customer.email }}
+	</div>
+    </div>
+
+    <div>
+
+	<div> Address: </div>
+
+	<div>
+	    <div> {{ customer.street_addr }} </div>
+	    <div> {{ customer.street_addr2 }} </div>
+	    <div> {{ customer.city }}, {{ customer.state }} {{ customer.zip }} </div>
+	</div>
+
+    </div>
+
+</div>
+

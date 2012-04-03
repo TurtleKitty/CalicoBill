@@ -1,0 +1,64 @@
+<html>
+
+<head>
+
+    <title> CalicoBill </title>
+    <link rel="stylesheet" type="text/css" href="/calico/css/calico.css" />
+
+    <script type="text/javascript" src="/calico/js/jquery.js"></script>
+    <script type="text/javascript" src="/calico/js/mustache.js"></script>
+    <script type="text/javascript" src="/calico/js/calico.js"></script>
+
+    <script type="text/javascript">
+
+	$(document).ready(
+	    function () {
+		Calico.init({
+		    baseuri: "http://anwu.org/calico",
+		    templates: [ "header", "footer", "customer/view", "invoice/list" ],
+		    callback: function () {
+			var which = location.pathname.split("/")[2],
+			    puri  = "/api/" + which
+			    id	  = Calico.params().id;
+			;
+
+			Calico.phonehome({
+			    uri: puri + "/customer/" + id,
+			    callback: function (customer_data) {
+				Calico.phonehome({
+				    uri: puri + "/customer/" + id + "/invoice",
+				    callback: function (invoice_data) {
+					$(document.body).html(
+					    Calico.render_layout([
+						[ "customer/view", { path: "/calico/" + which, customer: customer_data } ],
+						[ "invoice/list", { path: "/calico/" + which, invoices: invoice_data } ],
+					    ])
+					);
+
+					$("#add_invoice").click(
+					    function () {
+						window.location = "/calico/" + which + "/invoice/create.html?id=" + id;
+					    }
+					);
+				    }
+				})
+			    }
+			});
+		    }
+		});
+	    }
+	);
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="place">
+	Loading... <img src="/calico/wait.gif"/>
+    </div>
+
+</body>
+
+</html>

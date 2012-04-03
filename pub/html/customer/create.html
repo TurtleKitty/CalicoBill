@@ -1,0 +1,67 @@
+<html>
+
+<head>
+
+    <title> CalicoBill </title>
+    <link rel="stylesheet" type="text/css" href="/calico/css/calico.css" />
+
+    <script type="text/javascript" src="/calico/js/jquery.js"></script>
+    <script type="text/javascript" src="/calico/js/mustache.js"></script>
+    <script type="text/javascript" src="/calico/js/calico.js"></script>
+
+    <script type="text/javascript">
+
+	$(document).ready(
+	    function () {
+		Calico.init({
+		    baseuri: "http://anwu.org/calico",
+		    templates: [ "header", "footer", "customer/create" ],
+		    callback: function () {
+			var which = location.pathname.split("/")[2],
+			    path  = "/calico/" + which,
+			    puri  = "/api/" + which
+			;
+
+			$(document.body).html(
+			    Calico.render_layout([
+				[ "customer/create", { path: path } ],
+			    ])
+			);
+
+			$("#create").click(
+			    function () {
+				var required = [ "firstname", "lastname", "email", "street_addr", "city", "state", "zip" ];
+
+				if ( ! Calico.validate(required) ) {
+				    return false;
+				}
+
+				required.push("street_addr2");
+
+				Calico.posthome({
+				    post_uri: "/calico/api/" + which + "/customer/create",
+				    body: Calico.formvals(required),
+				    callback: function () {
+					window.location = path + "/customer/list.html";
+				    }
+				});
+			    }
+			);
+		    }
+		});
+	    }
+	);
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="place">
+	Loading... <img src="/calico/wait.gif"/>
+    </div>
+
+</body>
+
+</html>

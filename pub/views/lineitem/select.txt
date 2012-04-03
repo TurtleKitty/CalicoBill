@@ -1,0 +1,15 @@
+
+<tr>
+    <td>
+	<select id="li_{{ n }}_product">
+	    <option value="0" selected> Choose... </option>
+	    {{#products}}
+		<option value="{{ id }}"> {{ name }} </option>
+	    {{/products}}
+	</select>
+    </td>
+    <td> <span id="li_{{ n }}_price"> 0 </span> </td>
+    <td> <input type="text" size="5" id="li_{{ n }}_quantity" value="0" /> </td>
+    <td> <span id="li_{{ n }}_subtotal"> 0 </span> </td>
+</tr>
+

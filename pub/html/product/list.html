@@ -1,0 +1,59 @@
+<html>
+
+<head>
+
+    <title> CalicoBill </title>
+    <link rel="stylesheet" type="text/css" href="/calico/css/calico.css" />
+
+    <script type="text/javascript" src="/calico/js/jquery.js"></script>
+    <script type="text/javascript" src="/calico/js/mustache.js"></script>
+    <script type="text/javascript" src="/calico/js/calico.js"></script>
+
+    <script type="text/javascript">
+
+	$(document).ready(
+	    function () {
+		Calico.init({
+		    baseuri: "http://anwu.org/calico",
+		    templates: [ "header", "footer", "product/list" ],
+		    callback: function () {
+			var which = location.pathname.split("/")[2],
+			    puri  = "/api/" + which
+			;
+
+			Calico.phonehome({
+			    uri: puri + "/product",
+			    callback: function (data) {
+				$(document.body).html(
+				    [
+					Calico.render("header", {}),
+					Calico.render("product/list", { path: "/calico/" + which, products: data }),
+					Calico.render("footer", {})
+				    ].join("")
+				);
+
+				$("#add_product").click(
+				    function () {
+					window.location = "/calico/" + which + "/product/create.html";
+				    }
+				);
+			    }
+			});
+		    }
+		});
+	    }
+	);
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="place">
+	Loading... <img src="/calico/wait.gif"/>
+    </div>
+
+</body>
+
+</html>

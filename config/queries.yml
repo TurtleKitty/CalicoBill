@@ -1,0 +1,59 @@
+
+get_address: >
+    select street_addr, street_addr2, city, state, zip
+    from address
+    where id = ?
+
+get_customer: >
+    select c.id, email, firstname, lastname, street_addr, street_addr2, city, state, zip
+    from customer c
+    join address a on (c.address = a.id)
+    where c.id = ?
+
+get_invoice: >
+    select id, customer, billing_address, shipping_address, created
+    from invoice
+    where id = ?
+
+get_product: >
+    select id, name, price, description
+    from product
+    where id = ?
+
+get_lineitems: >
+    select l.id, l.price, l.quantity, p.name, p.price, p.description
+    from lineitem l join product p on (l.product = p.id)
+    where invoice = ?
+
+list_customers: >
+    select id, firstname, lastname, email
+    from customer
+
+list_invoices: >
+    select id, customer, billing_address, shipping_address, created
+    from invoice
+
+list_products: >
+    select id, name, price, description
+    from product
+
+get_customer_invoices: >
+    select id, customer, billing_address, shipping_address, created
+    from invoice
+    where customer = ?
+
+add_address: >
+    insert into address (street_addr, street_addr2, city, state, zip) values (?, ?, ?, ?, ?)
+
+add_customer: >
+    insert into customer (address, email, firstname, lastname) values (?, ?, ?, ?)
+
+add_product: >
+    insert into product (name, price, description) values (?, ?, ?)
+
+add_invoice: >
+    insert into invoice (customer, billing_address, shipping_address) values (?, ?, ?)
+
+add_lineitem: >
+    insert into lineitem (product, invoice, price, quantity) values (?, ?, ?, ?)
+

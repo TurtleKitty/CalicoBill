@@ -1,0 +1,24 @@
+
+<div class="place">
+
+<table>
+    <thead>
+	<tr> <th> Product ID </th> <th> Name </th> <th> Price </th> <th> Description </th> </tr>
+    </thead>
+    <tbody>
+	{{#products}}
+	    <tr>
+		<td> {{ id }} </td>
+		<td> {{ name }} </td>
+		<td> {{ price }} </td>
+		<td> {{ description }} </td>
+	    </tr>
+	{{/products}}
+    </tbody>
+    <tfoot>
+	<tr> <td colspan="4" style="text-align: right"> <button id="add_product"> Add Product </button> </td> </tr>
+    </tfoot>
+</table>
+
+</div>
+

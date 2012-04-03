@@ -1,0 +1,157 @@
+<html>
+
+<head>
+
+    <title> CalicoBill </title>
+    <link rel="stylesheet" type="text/css" href="/calico/css/calico.css" />
+
+    <script type="text/javascript" src="/calico/js/jquery.js"></script>
+    <script type="text/javascript" src="/calico/js/mustache.js"></script>
+    <script type="text/javascript" src="/calico/js/calico.js"></script>
+
+    <script type="text/javascript">
+
+	$(document).ready(
+	    function () {
+		Calico.init({
+		    baseuri: "http://anwu.org/calico",
+		    templates: [ "header", "footer", "invoice/create", "lineitem/select" ],
+		    callback: function () {
+			var which = location.pathname.split("/")[2],
+			    path  = "/calico/" + which,
+			    puri  = "/api/" + which,
+			    id	  = Calico.params().id,
+			    numli = 0
+			;
+
+			Calico.phonehome({
+			    uri: puri + "/product",
+			    callback: function (products) {
+				$(document.body).html(
+				    Calico.render_layout([
+					[ "invoice/create", { path: path } ],
+				    ])
+				);
+
+				var li_calc = function () {
+				    for (var j = 1; j <= numli; j++) {
+					var base_id = "#li_" + j + "_";
+					$(base_id + "subtotal").val(
+					    parseInt($(base_id + "price").val()) * parseInt($(base_id + "quantity").val())
+					);
+				    }
+				};
+
+				var renderli = function () {
+				    numli++;
+
+				    var get_product = function (id) {
+					return products.filter(
+					    function (item) {
+						return item.id === id;
+					    }
+					)[0];
+				    };
+
+				    var update_grand_total = function () {
+					var sum = 0;
+
+					for (var k = 1; k <= numli; k++) {
+					    sum += parseFloat( $("#li_" + k + "_price").text() )
+						 * parseInt( $("#li_" + k + "_quantity").val() )
+					}
+
+					$("#grand_total").text(sum);
+				    };
+
+				    var update_subtotal = function (base_id, product) {
+					$(base_id + "subtotal").text(
+					    (product.price * parseInt($(base_id + "quantity").val())).toFixed(2)
+					);
+				    };
+
+				    $("#lineitems > tbody").after(
+					Calico.render("lineitem/select", { products: products, n: numli })
+				    );
+
+				    var base_id = "#li_" + numli + "_";
+
+				    var updateli = function () {
+					var prd = get_product( parseInt( $(base_id + "product").val() ) );
+
+					if (!prd) { prd = { price: 0 }; }
+
+					$(base_id + "price").text(prd.price);
+
+					update_subtotal(base_id, prd);
+					update_grand_total();
+				    };
+
+				    $(base_id + "product").change( updateli );
+				    $(base_id + "quantity").change( updateli );
+				};
+
+				renderli();
+
+				$("#add_lineitem").click(
+				    function () {
+					renderli();
+					return false;
+				    }
+				);
+
+				$("#create").click(
+				    function () {
+					var required = [ "street_addr", "city", "state", "zip" ];
+					var fields   = [ "street_addr2" ].concat(required);
+					var body     = Calico.formvals(fields);
+
+					body.lineitems = [ ];
+
+					for (var i = 1; i <= numli; i++) {
+					    var prod_id = "li_" + i + "_product";
+					    var quan_id = "li_" + i + "_quantity";
+
+					    required.concat([ prod_id, quan_id ]);
+
+					    body.lineitems.push({
+						product:  parseInt( $("#" + prod_id).val() ),
+						quantity: parseInt( $("#" + quan_id).val() )
+					    });
+					}
+
+					if ( ! Calico.validate(required) ) {
+					    return false;
+					}
+
+					Calico.posthome({
+					    post_uri: "/calico/api/" + which + "/customer/" + id + "/invoice/create",
+					    body: body,
+					    callback: function () {
+						window.location = path + "/customer/view.html?id=" + id;
+					    }
+					});
+
+					return false;
+				    }
+				);
+			    }
+			});
+		    }
+		});
+	    }
+	);
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="place">
+	Loading... <img src="/calico/wait.gif"/>
+    </div>
+
+</body>
+
+</html>

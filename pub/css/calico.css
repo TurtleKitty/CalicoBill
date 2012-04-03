@@ -1,0 +1,82 @@
+
+body {
+  font-family: sans-serif;
+  background-color: #000;
+  color: #ff0;
+  border: solid thin #00c;
+  margin: 20px;
+  padding: 20px;
+}
+
+div.place {
+  margin: 10px;
+  padding: 10px;
+}
+
+div.hr {
+  margin: 10px -20px 10px -20px;
+  padding: 10px 10px 10px 10px;
+  border-bottom: solid thin #00c;
+}
+
+h1,h2,h3 {
+  font-family: serif;
+}
+
+table {
+  border: solid thin #00c;
+  border-collapse: collapse;
+}
+
+td,th {
+  border: solid thin #00c;
+  padding: 6px;
+}
+
+table.invis {
+  padding: 10px;
+  border: none thin #000;
+}
+
+.invis {
+  border: none thin #000;
+}
+
+td.center {
+  text-align: center;
+}
+
+th.left {
+  text-align: left;
+}
+
+a:link {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #ff0000;
+  text-decoration: none;
+}
+
+a:active {
+  color: #ffff00;
+}
+
+a:hover {
+  color: #0c0;
+}
+
+input, textarea, select {
+  color: #ff0;
+  font-weight: bold;
+  background-color: #000;
+  border: solid thin #cc0;
+  padding: 2px;
+}
+
+input:hover, textarea:hover, select:hover {
+  border: solid thin #0c0;
+}
+
