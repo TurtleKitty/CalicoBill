@@ -4,7 +4,7 @@ require_relative "db"
 class Product
     def self.list
 	begin
-	    CalicoDB.new.query("list_products").map do |p|
+	    CalicoDB.new.query(:list_products).map do |p|
 		p[:price] = p[:price].to_f
 		p
 	    end
@@ -16,7 +16,7 @@ class Product
 
     def self.get (id)
 	begin
-	    CalicoDB.new.query("get_product", [ id ])[0]
+	    CalicoDB.new.query(:get_product, [ id ])[0]
 	rescue Exception => e
 	    puts e
 	    { }

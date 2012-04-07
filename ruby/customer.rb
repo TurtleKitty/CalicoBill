@@ -4,12 +4,12 @@ require_relative "invoice"
 
 class Customer
     def self.list
-	CalicoDB.new.query("list_customers") || []
+	CalicoDB.new.query(:list_customers) || []
     end
 
     def self.get (id)
 	begin
-	    CalicoDB.new.query("get_customer", [ id ])[0]
+	    CalicoDB.new.query(:get_customer, [ id ])[0]
 	rescue Exception => e
 	    puts e
 	    { }
@@ -34,7 +34,7 @@ class Customer
 
     def self.invoices (id)
 	begin
-	    CalicoDB.new.query("get_customer_invoices", [ id ]).map do |i|
+	    CalicoDB.new.query(:get_customer_invoices, [ id ]).map do |i|
 		Invoice.get(i[:id])
 	    end
 	rescue Exception => e

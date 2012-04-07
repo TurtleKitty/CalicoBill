@@ -19,7 +19,7 @@ class Address
 
     def self.get (id)
 	begin
-	    CalicoDB.new.query("get_address", [ id ])[0]
+	    CalicoDB.new.query(:get_address, [ id ])[0]
 	rescue Exception => e
 	    puts e
 	    { }

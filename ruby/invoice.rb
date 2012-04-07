@@ -6,7 +6,7 @@ require_relative "customer"
 class Invoice
     def self.list
 	begin
-	    CalicoDB.new.query("list_invoices").map do |i|
+	    CalicoDB.new.query(:list_invoices).map do |i|
 		self.get(i[:id])
 	    end
 	rescue Exception => e
@@ -18,11 +18,11 @@ class Invoice
     def self.get (id)
 	begin
 	    db = CalicoDB.new
-	    invoice = db.query("get_invoice", [ id ])[0]
+	    invoice = db.query(:get_invoice, [ id ])[0]
 	    invoice[:customer] = Customer.get(invoice[:customer])
 	    invoice[:billing_address] = Address.get(invoice[:billing_address])
 	    invoice[:shipping_address] = Address.get(invoice[:shipping_address])
-	    invoice[:lineitems] = db.query("get_lineitems", [ id ]).map do |x|
+	    invoice[:lineitems] = db.query(:get_lineitems, [ id ]).map do |x|
 		x[:price] = x[:price].to_f
 		x[:total] = x[:price] * x[:quantity]
 		x
@@ -69,7 +69,7 @@ class Invoice
 		db.exec[:lineitem].insert(
 		    :invoice  => inv_id,
 		    :product  => product[:id],
-		    :price	  => product[:price],
+		    :price    => product[:price],
 		    :quantity => li["quantity"]
 		)
 	    end
