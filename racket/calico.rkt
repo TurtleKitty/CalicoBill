@@ -41,7 +41,9 @@
 	    (lambda () (postgresql-connect 
 		#:user	   (hash-ref dbconf 'username)
 		#:database (hash-ref dbconf 'database)
-		#:password (hash-ref dbconf 'password))))))
+		#:password (hash-ref dbconf 'password)))
+	    #:max-connections 60
+	    #:max-idle-connections 10)))
 
 (define (num->str->join xs ch)
     (string-join
