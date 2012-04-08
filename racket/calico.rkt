@@ -3,7 +3,7 @@
 (require db)
 (require web-server/servlet
          web-server/servlet-env)
-
+(require web-server/managers/none)
 (require (planet dherman/json:4:0))
 
 
@@ -306,5 +306,8 @@
     #:port 16388
     #:servlet-regexp #rx""
     #:command-line? #t
+    #:stateless? #t
+    #:manager (create-none-manager #f)
     #:log-file "calico.log")
+
 
