@@ -303,9 +303,13 @@
 
 (displayln "Ready.")
 
+(define ccla (current-command-line-arguments))
+(define host (vector-ref ccla 0))
+(define port (string->number (vector-ref ccla 1)))
+
 (serve/servlet calicobill
-    #:listen-ip "127.0.0.1"
-    #:port 16388
+    #:listen-ip host
+    #:port port
     #:servlet-regexp #rx""
     #:command-line? #t
     #:stateless? #t
