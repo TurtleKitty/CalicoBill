@@ -1,9 +1,7 @@
 #lang racket
 
 (require db)
-(require web-server/servlet
-         web-server/servlet-env)
-(require web-server/managers/none)
+(require (planet neil/scgi))
 (require (planet dherman/json:4:0))
 
 
@@ -42,8 +40,8 @@
 		#:user	   (hash-ref dbconf 'username)
 		#:database (hash-ref dbconf 'database)
 		#:password (hash-ref dbconf 'password)))
-	    #:max-connections 10
-	    #:max-idle-connections 10)))
+	    #:max-connections 7
+	    #:max-idle-connections 7)))
 
 (define (num->str->join xs ch)
     (string-join
@@ -140,10 +138,12 @@
 	    (get-invoice (hash-ref inv "id")))
 	lst))
 
-(define (parse-body req)
+(define (parse-body)
     (json->jsexpr
-        (bytes->string/utf-8
-            (request-post-data/raw req))))
+	(sequence-fold
+	    (lambda (x y) (string-append x y))
+	    ""
+	    (in-lines (current-input-port)))))
 
 (define (uncool x)
     (and (string? x)
@@ -164,17 +164,17 @@
 
 ; handlers
 
-(define (hello-calico req)
+(define (hello-calico)
     "Hello, Calico!")
 
-(define (customer-list req)
+(define (customer-list)
     (dbfetch 'list_customers))
 
-(define (customer-view req id)
+(define (customer-view id)
     (fetch/nf 'get_customer (list id)))
 
-(define (customer-create req)
-    (define params (parse-body req))
+(define (customer-create)
+    (define params (parse-body))
     (define firstname (hash-ref params 'firstname))
     (define lastname (hash-ref params 'lastname))
     (define email (hash-ref params 'email))
@@ -195,19 +195,19 @@
 			    firstname
 			    lastname)))))))
 
-(define (customer-invoices req id)
+(define (customer-invoices id)
     (build-invoices
 	(dbfetch 'get_customer_invoices (list id))))
 
-(define (customer-invoice-create req cid)
-    (define params (parse-body req))
+(define (customer-invoice-create cid)
+    (define params (parse-body))
     (define street_addr (hash-ref params 'street_addr))
     (define street_addr2 (hash-ref params 'street_addr2))
     (define city (hash-ref params 'city))
     (define state (hash-ref params 'state))
     (define zip (numstring (hash-ref params 'zip)))
     (define lineitems (hash-ref params 'lineitems))
-    (define customer (customer-view req cid)) ; unexpected and hilarious bonus!
+    (define customer (customer-view cid)) ; unexpected and hilarious bonus!
     (begin
 	(check-params (list cid street_addr city state zip))
 	(map
@@ -238,11 +238,11 @@
 			    lineitems)
 			invoice_id))))))
 
-(define (product-list req)
+(define (product-list)
     (dbfetch 'list_products))
 
-(define (product-create req)
-    (define params (parse-body req))
+(define (product-create)
+    (define params (parse-body))
     (define name (hash-ref params 'name)) 
     (define price (string->number (hash-ref params 'price))) 
     (define desc (hash-ref params 'desc)) 
@@ -252,68 +252,62 @@
 	[(< price 0) (error "Bad price.") ]
 	[else (hash 'ok (dbx 'add_product (list name price desc)))]))
 
-(define (invoice-list req)
+(define (invoice-list)
     (build-invoices
 	(dbfetch 'list_invoices)))
 
-(define (invoice-view req id)
+(define (invoice-view id)
     (get-invoice id))
 
 
 ; web server
 
-(define-values (calico-dispatch calico-url)
-    (dispatch-rules
-     [("customer") customer-list]
-     [("customer" (integer-arg)) customer-view]
-     [("customer" "create") customer-create]
-     [("customer" (integer-arg) "invoice") customer-invoices]
-     [("customer" (integer-arg) "invoice" "create") customer-invoice-create]
-     [("product") product-list]
-     [("product" "create") product-create]
-     [("invoice") invoice-list]
-     [("invoice" (integer-arg)) invoice-view]
-     [else hello-calico] ))
+(define (calico-dispatch path)
+    (define parts (rest (rest (rest (rest (regexp-split #rx"/" path))))))
+    ((let ([x (car parts)] [xs (cdr parts)])
+	(cond
+	    [(equal? x "product")
+		(cond [(null? xs) product-list]
+		      [else product-create])]
+	    [(equal? x "invoice")
+		(cond [(null? xs) invoice-list]
+		      [else (lambda () (invoice-view (string->number (car xs))))])]
+	    [(equal? x "customer") 
+		(cond [(null? xs) customer-list]
+		      [else
+			(let ([y (car xs)] [ys (cdr xs)])
+			    (cond [(equal? y "create") customer-create]
+				  [else
+				    (let ([id (string->number y)])
+					(cond [(null? ys) (lambda () (customer-view id))]
+					      [(null? (cdr ys)) (lambda () (customer-invoices id))]
+					      [else (lambda () (customer-invoice-create id))]))]))])]
+	    [ else hello-calico ]))))
 
-(define (mk-header-list lst)
-    (map (lambda (x) (make-header (car x) (cdr x)))
-	(append lst (list '(#"X-Secret" . #"CalicoBill by TurtleKitty")))))
-
-(define (text-response data [ headers '() ])
-    (response/full
-	200 #"OK"
-	(current-seconds)
-	#"text/plain"
-	(mk-header-list headers)
-	(list (string->bytes/utf-8 (string-join data "")))))
-
-(define (json-response data [ headers '() ])
-    (response/full
-	200 #"OK"
-	(current-seconds)
-	#"application/json"
-	(mk-header-list headers)
-	(list (string->bytes/utf-8 (jsexpr->json data)))))
-
-(define (calicobill req)
-    (json-response
+(define (calicobill)
+    (jsexpr->json
 	(with-handlers
 	    ([exn:fail? (lambda (e) (hash "error" (exn-message e)))])
-	    (calico-dispatch req))))
+	    (calico-dispatch (cgi-request-uri)))))
 
-(displayln "Ready.")
+(define stderr (current-error-port))
+
+(define (start)
+    (displayln "Ready." stderr))
+
+(define (go)
+    (displayln "Content-type: application/json\n")
+    (displayln (calicobill)))
+
+(define (end)
+    (displayln "OK I LOVE YOU BYE BYE!!" stderr))
 
 (define ccla (current-command-line-arguments))
 (define host (vector-ref ccla 0))
 (define port (string->number (vector-ref ccla 1)))
 
-(serve/servlet calicobill
-    #:listen-ip host
-    #:port port
-    #:servlet-regexp #rx""
-    #:command-line? #t
-    #:stateless? #t
-    #:manager (create-none-manager #f)
-    #:log-file "calico.log")
-
+(cgi start go end
+    #:scgi-hostname host
+    #:scgi-portnum port
+    #:scgi-max-allow-wait 10)
 
