@@ -54,17 +54,17 @@ function dbq (name, params) {
 var app = module.exports = express.createServer();
 
 app.configure(function(){
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(app.router);
 });
 
 app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler());
+    app.use(express.errorHandler());
 });
 
 
@@ -93,7 +93,7 @@ function hello (req, rez) {
 
 
 function customer_list (req, rez) {
-    rez.json(
+    rez.json("NOP");
 }
 
 
