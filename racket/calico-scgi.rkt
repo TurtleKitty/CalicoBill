@@ -309,5 +309,5 @@
 (cgi start go end
     #:scgi-hostname host
     #:scgi-portnum port
-    #:scgi-max-allow-wait 10)
+    #:scgi-max-allow-wait 20)
 
