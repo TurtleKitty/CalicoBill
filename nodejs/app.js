@@ -26,12 +26,35 @@ function jconf (fname) {
     return json;
 }
 
+
+function requestion (query, n) {
+    var reg = /\?/;
+
+    if (reg.test(query)) {
+	return requestion(query.replace(reg, "$" + n), n + 1);
+    }
+
+    return query;
+}
+
+
 var pgconf  = jconf('db'),
-    sql	    = jconf('queries'),
-    pgconn  = "postgres://" + pgconf.username + ":" + pgconf.password + "@localhost:5432/calico";
+    sql     = { },
+    sqltmp  = jconf('queries'),
+    pgconn  = "postgres://" + pgconf.username + ":" + pgconf.password + "@localhost:5432/calico"
+;
 
 
-function dbq (name, params) {
+sql = Object.keys(sqltmp).reduce(
+    function (struct, query) {
+	struct[query] = requestion(sqltmp[query], 1);
+	return struct;
+    },
+    { }
+);
+
+
+function dbq (name, params, fn) {
     pg.connect(
 	pgconn,
 	function (err, client) {
@@ -42,12 +65,63 @@ function dbq (name, params) {
 	    client.query(
 		sql[name],
 		params,
-		function (err, results) {
-		    
-		}
+		fn
 	    );
 	}
     );
+}
+
+
+function build_invoice (invoice, fn) {
+    var noob = {};
+
+    noob.id = invoice.id;
+    noob.created = invoice.created.toString().replace(/T/, " ").replace(/\.*/, "");
+
+    dbq('get_customer', [ invoice.customer ], function (err, results) {
+	noob.customer = results.rows[0];
+
+	dbq('get_lineitems', [ invoice.id ], function (err, results) {
+	    noob.lineitems = results.rows.map( function (v) {
+		v.total = v.price * v.quantity;
+		return v;
+	    });
+
+	    noob.amount = noob.lineitems.reduce(function (sum, x) {
+		return sum + x.total;
+	    }, 0);
+
+	    dbq('get_address', [ invoice.billing_address ], function (err, results) {
+		noob.billing_address = results.rows[0];
+
+		if (invoice.billing_address == invoice.shipping_address) {
+		    noob.shipping_address = noob.billing_address;
+		    fn(noob);
+		}
+		else {
+		    dbq('get_address', [ invoice.shipping_address ], function (err, results) {
+			noob.shipping_address = results.rows[0];
+			fn(noob);
+		    });
+		}
+	    });
+	});
+    });
+}
+
+
+function build_invoice_list(invoices, ilist, fn) {
+    var thisguy = invoices.shift();
+
+    if (thisguy == null) {
+	fn(ilist);
+    }
+    else {
+	build_invoice(thisguy, function (invoice) {
+	    ilist.push(invoice);
+	    build_invoice_list(invoices, ilist, fn);
+	});
+    }
 }
 
 
@@ -85,6 +159,19 @@ app.get('/invoice', invoice);
 app.get('/invoice/:id', invoice_view);
 
 
+function simple_list (query, rez) {
+    dbq(query, [], function (err, results) {
+	var rval = []
+
+	if (!err) {
+	    rval = results.rows;
+	}
+
+	rez.json(rval);
+    });
+}
+
+
 // handlers
 
 function hello (req, rez) {
@@ -93,30 +180,50 @@ function hello (req, rez) {
 
 
 function customer_list (req, rez) {
-    rez.json("NOP");
+    simple_list('list_customers', rez);
 }
 
 
 function customer_view (req, rez) {}
-function customer_invoices (req, rez) {}
+
+
+function customer_invoices (req, rez) {
+    dbq('get_customer_invoices', [ req.params.id ], function (err, results) {
+	build_invoice_list(results.rows, [], function (ilist) {
+	    rez.json(ilist);
+	})
+    });
+}
+
+
 function customer_create (req, rez) {}
+
+
 function customer_invoice_create (req, rez) {}
 
-function product (req, rez) {}
+
+function product (req, rez) {
+    simple_list('list_products', rez);
+}
+
+
 function product_create (req, rez) {}
 
-function invoice (req, rez) {}
+
+function invoice (req, rez) {
+    dbq('list_invoices', [], function (err, results) {
+	build_invoice_list(results.rows, [], function (ilist) {
+	    rez.json(ilist);
+	})
+    });
+}
+
 function invoice_view (req, rez) {}
 
 
-pg.connect(
-    pgconn,
-    function (err, client) {
-	app.listen(16386, function(){
-	    console.log("CalicoBill node.js listening on %d in %s mode", app.address().port, app.settings.env);
-	});
-    }
-);
+app.listen(16386, function(){
+    console.log("CalicoBill node.js listening on %d in %s mode", app.address().port, app.settings.env);
+});
 
 
 
