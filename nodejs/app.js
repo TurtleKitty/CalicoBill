@@ -72,6 +72,22 @@ function dbq (name, params, fn) {
 }
 
 
+function dbadd (name, params, fn) {
+    dbq(name, params, function (err, rval) {
+	pg.connect(
+	    pgconn,
+	    function (err, client) {
+		client.query("select lastval() as id", null, function (err2, rval2) {
+console.log("error: " + err2);
+console.log(rval2);
+		    fn(rval2.rows[0].id);
+		});
+	    }
+	);
+    })
+}
+
+
 function build_invoice (invoice, fn) {
     var noob = {};
 
@@ -144,6 +160,7 @@ app.configure('production', function(){
 // routes
 
 app.get('/', hello);
+app.all('/test', test);
 
 app.get('/customer', customer_list);
 app.get('/customer/:id', customer_view);
@@ -188,6 +205,11 @@ function hello (req, rez) {
 }
 
 
+function test (req, rez) {
+    rez.json(req.body);
+}
+
+
 function customer_list (req, rez) {
     simple_q('list_customers', [], rez);
 }
@@ -209,7 +231,15 @@ function customer_invoices (req, rez) {
 }
 
 
-function customer_create (req, rez) {}
+function customer_create (req, rez) {
+    var p = req.body;
+
+    dbadd('add_address', [ p.street_addr, p.street_addr2, p.city, p.state, p.zip ], function (addr_id) {
+	dbadd('add_customer', [ addr_id, p.email, p.firstname, p.lastname ], function (cust_id) {
+	    rez.json({ ok: cust_id });
+	});
+    });
+}
 
 
 function customer_invoice_create (req, rez) {}
