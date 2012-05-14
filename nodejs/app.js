@@ -159,8 +159,8 @@ app.get('/invoice', invoice);
 app.get('/invoice/:id', invoice_view);
 
 
-function simple_list (query, rez) {
-    dbq(query, [], function (err, results) {
+function simple_q (query, params, rez) {
+    dbq(query, params, function (err, results) {
 	var rval = []
 
 	if (!err) {
@@ -180,11 +180,15 @@ function hello (req, rez) {
 
 
 function customer_list (req, rez) {
-    simple_list('list_customers', rez);
+    simple_q('list_customers', [], rez);
 }
 
 
-function customer_view (req, rez) {}
+function customer_view (req, rez) {
+    dbq('get_customer', [ req.params.id ], function (err, results) {
+	rez.json(results.rows[0]);
+    });
+}
 
 
 function customer_invoices (req, rez) {
@@ -203,7 +207,7 @@ function customer_invoice_create (req, rez) {}
 
 
 function product (req, rez) {
-    simple_list('list_products', rez);
+    simple_q('list_products', [], rez);
 }
 
 
@@ -218,7 +222,13 @@ function invoice (req, rez) {
     });
 }
 
-function invoice_view (req, rez) {}
+function invoice_view (req, rez) {
+    dbq('get_invoice', [ req.params.id ], function (err, results) {
+        build_invoice(results.rows[0], function (invoice) {
+	    rez.json(invoice);
+	});
+    });
+}
 
 
 app.listen(16386, function(){
