@@ -130,7 +130,6 @@ var app = module.exports = express.createServer();
 app.configure(function(){
     app.use(express.bodyParser());
     app.use(express.methodOverride());
-    app.use(app.router);
 });
 
 app.configure('development', function(){
@@ -149,11 +148,11 @@ app.get('/', hello);
 app.get('/customer', customer_list);
 app.get('/customer/:id', customer_view);
 app.get('/customer/:id/invoice', customer_invoices);
-app.get('/customer/create', customer_create);
-app.get('/customer/:id/invoice/create', customer_invoice_create);
+app.post('/customer/create', customer_create);
+app.post('/customer/:id/invoice/create', customer_invoice_create);
 
 app.get('/product', product);
-app.get('/product/create', product_create);
+app.post('/product/create', product_create);
 
 app.get('/invoice', invoice);
 app.get('/invoice/:id', invoice_view);
@@ -170,6 +169,16 @@ function simple_q (query, params, rez) {
 	rez.json(rval);
     });
 }
+
+
+function not_cool(thing) {
+    if (thing == null || thing.length < 1) {
+	return true;
+    }
+
+    return false;
+}
+
 
 
 // handlers
@@ -211,7 +220,40 @@ function product (req, rez) {
 }
 
 
-function product_create (req, rez) {}
+function product_create (req, rez) {
+    var name = req.body.name,
+	desc = req.body.desc,
+	price = req.body.price
+    ;
+
+    if (not_cool(name)) {
+	rez.json("Bad name.");
+	return;
+    }
+
+    if (not_cool(desc)) {
+	rez.json("Bad description.");
+	return;
+    }
+
+    if (price < 0) {
+	rez.json("Bad price.");
+	return;
+    }
+
+    dbq('add_product', [ name, price, desc ], function (err, results) {
+	var rval;
+
+	if (err) {
+	    rval = { fail: "Error adding product." };
+	}
+	else {
+	    rval = { ok: 1 };
+	}
+
+	rez.json(rval);
+    });
+}
 
 
 function invoice (req, rez) {
