@@ -271,11 +271,11 @@ sub customer_invoice_create {
 	    my $product = $db->query($sql->{get_product}, $li->{product})->hash;
 
 	    $db->query(
-		$sql->{add_lineitem},
-		$li->{product},
-		$invoice_id,
-		$product->{price},
-		$li->{quantity},
+            $sql->{add_lineitem},
+            $li->{product},
+            $invoice_id,
+            $product->{price},
+            $li->{quantity},
 	    );
 	}
 

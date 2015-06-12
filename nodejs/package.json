@@ -1,9 +1,12 @@
 {
-    "name": "CalicoBill"
-  , "version": "0.0.1"
-  , "private": true
-  , "dependencies": {
-      "express": "2.5.8"
-    , "jade": ">= 0.0.1"
-  }
+    "name": "CalicoBill",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "async": "1.2.1",
+        "body-parser": "1.12.4",
+        "express": "4.12.4",
+        "node-dbi": "0.7.1",
+        "pg": "4.4.0"
+    }
 }

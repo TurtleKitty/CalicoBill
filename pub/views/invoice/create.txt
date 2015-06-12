@@ -30,7 +30,7 @@
 		</tbody>
 		<tfoot>
 		    <tr>
-    <td colspan="3" style="text-align: right"> <button id="add_lineitem"> Add Lineitem </button> </td>
+    <td colspan="3" style="text-align: right"> <button type="button" id="add_lineitem"> Add Lineitem </button> </td>
     <td> <span id="grand_total"> 0 </span> </td>
 		    </tr>
 		</tfoot>
@@ -39,7 +39,7 @@
 	</div>
 
 	<div class="place">
-	    <button id="create"> Create Invoice </button>
+	    <button type="button" id="create"> Create Invoice </button>
 	</div>
 
     </form>

@@ -33,6 +33,7 @@
 				var required = [ "name", "price", "desc" ];
 
 				if ( ! Calico.validate(required) ) {
+                    console.error("Validation FAIL: %j", required);
 				    return false;
 				}
 

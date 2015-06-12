@@ -80,3 +80,6 @@ input:hover, textarea:hover, select:hover {
   border: solid thin #0c0;
 }
 
+option {
+  background-color: #000;
+}

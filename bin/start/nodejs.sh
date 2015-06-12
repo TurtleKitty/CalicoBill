@@ -1,4 +1,5 @@
 #!/bin/sh
 
+LOG=/home/calicobill/nodejs/log
 cd /home/calicobill/nodejs
-node_modules/forever/bin/forever start app.js 
+forever start -a -l $LOG -o $LOG -e $LOG index.js 

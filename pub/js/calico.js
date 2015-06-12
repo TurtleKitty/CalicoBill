@@ -19,7 +19,7 @@ var Calico = (function () {
 	    args.templates,
 	    function (idx, tmpl) {
 		var ckey = "calico/templates/" + tmpl;
-		var cached = localStorage.getItem(ckey);
+		var cached = false; //localStorage.getItem(ckey);
 
 		if (cached) {
 		    obj.templates[tmpl] = cached;
@@ -159,29 +159,29 @@ var Calico = (function () {
 
     // post_uri, body, callback
     obj.posthome = function (args) {
-	var body = JSON.stringify(args.body);
+        var body = JSON.stringify(args.body);
 
-	$.ajax(
-	    args.post_uri, {
-		type: "POST",
-		dataType: "json",
-		contentType: "application/json",
-		processData: false,
-		data: body,
-		success: function (data) {
-		    if (data.error) {
-			console.log("error: " + data.error);
-		    }
-		    else {
-			args.callback();
-		    }
-		},
-		error: function (jqxhr, text, err) {
-		    console.log(text + " ::: " + err);
-		    args.callback();
-		}
-	    }
-	);
+        $.ajax(
+            args.post_uri, {
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                processData: false,
+                data: body,
+                success: function (data) {
+                    if (data.error) {
+                        console.log("error: " + data.error);
+                    }
+                    else {
+                        args.callback();
+                    }
+                },
+                error: function (jqxhr, text, err) {
+                    console.log(text + " ::: " + err);
+                    args.callback();
+                }
+            }
+        );
     };
 
     return obj;

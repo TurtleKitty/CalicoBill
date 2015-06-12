@@ -40,8 +40,8 @@
 		#:user	   (hash-ref dbconf 'username)
 		#:database (hash-ref dbconf 'database)
 		#:password (hash-ref dbconf 'password)))
-	    #:max-connections 7
-	    #:max-idle-connections 7)))
+	    #:max-connections 3
+	    #:max-idle-connections 5)))
 
 (define (num->str->join xs ch)
     (string-join
@@ -306,7 +306,10 @@
 (define host (vector-ref ccla 0))
 (define port (string->number (vector-ref ccla 1)))
 
-(cgi start go end
+(cgi
+    #:startup start
+    #:request go
+    #:shutdown end
     #:scgi-hostname host
     #:scgi-portnum port
     #:scgi-max-allow-wait 20)

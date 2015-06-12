@@ -11,7 +11,7 @@
 	    <tr> <th> City </th> <td> <input id="city" type="text" size="24"  maxlength="64" /> </td> </tr>
 	    <tr> <th> State </th> <td> <input id="state" type="text" size="24"  maxlength="32" /> </td> </tr>
 	    <tr> <th> Zip Code </th> <td> <input id="zip" type="text" size="12"  maxlength="16" /> </td> </tr>
-	    <tr> <th colspan="2" style="text-align: right"> <button id="create"> Create </button> </th> </tr>
+	    <tr> <th colspan="2" style="text-align: right"> <button type="button" id="create"> Create </button> </th> </tr>
 	</table>
     </form>
 

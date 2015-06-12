@@ -22,7 +22,7 @@
 
     </tbody>
     <tfoot>
-        <tr> <td colspan="4" style="text-align: right"> <button id="add_invoice"> Add Invoice </button> </td> </tr>
+        <tr> <td colspan="4" style="text-align: right"> <button type="button" id="add_invoice"> Add Invoice </button> </td> </tr>
     </tfoot>
 </table>
 

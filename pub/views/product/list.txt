@@ -16,7 +16,7 @@
 	{{/products}}
     </tbody>
     <tfoot>
-	<tr> <td colspan="4" style="text-align: right"> <button id="add_product"> Add Product </button> </td> </tr>
+	<tr> <td colspan="4" style="text-align: right"> <button type="button" id="add_product"> Add Product </button> </td> </tr>
     </tfoot>
 </table>
 
