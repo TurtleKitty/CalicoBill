@@ -1,0 +1,8 @@
+source 'https://rubygems.org'
+
+gem 'sinatra', require: 'sinatra/base' # web framework
+gem 'sinatra-contrib' # Sinatra extensions
+gem 'pg'     # postgres db gem
+gem 'sequel' # database library
+gem 'unicorn' # production web server
+gem 'rake' # Project requirements

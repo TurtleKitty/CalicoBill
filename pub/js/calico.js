@@ -23,7 +23,7 @@ var Calico = (function () {
             args.templates,
             function (idx, tmpl) {
                 var ckey = "calico/templates/" + tmpl;
-                var cached = false; //localStorage.getItem(ckey);
+                var cached = localStorage.getItem(ckey);
 
                 if (cached) {
                     obj.templates[tmpl] = cached;
@@ -124,6 +124,7 @@ var Calico = (function () {
                 args.callback(data);
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                obj.notice("Error connecting to " + obj.baseuri + args.uri);
                 console.error(textStatus + " : " + errorThrown);
             }
         });

@@ -1,5 +1,5 @@
 <div class="section">
     <h1> CalicoBill </h1>
 </div>
-<div id="notice"
+<div id="notice">
 </div>
