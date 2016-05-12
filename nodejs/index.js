@@ -339,6 +339,7 @@ function invoice_view (req, rez) {
 
 http.createServer(app).listen(
     16386,
+    '::1',
     function () {
         clog("CalicoBill node.js listening on port %d", 16386);
     }

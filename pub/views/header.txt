@@ -1,8 +1,5 @@
-
-<div class="place">
-
+<div class="section">
     <h1> CalicoBill </h1>
-
 </div>
-
-<div class="hr"/>
+<div id="notice"
+</div>

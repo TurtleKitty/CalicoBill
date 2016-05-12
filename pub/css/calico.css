@@ -1,85 +1,86 @@
 
 body {
-  font-family: sans-serif;
-  background-color: #000;
-  color: #ff0;
-  border: solid thin #00c;
-  margin: 20px;
-  padding: 20px;
+    font-family: sans-serif;
+    background-color: #000;
+    color: #ff0;
+    border: solid thin #00c;
+    margin: 2em;
+}
+
+div.section {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-left: 3em;
+    border: solid thin #00c;
 }
 
 div.place {
-  margin: 10px;
-  padding: 10px;
-}
-
-div.hr {
-  margin: 10px -20px 10px -20px;
-  padding: 10px 10px 10px 10px;
-  border-bottom: solid thin #00c;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
 }
 
 h1,h2,h3 {
-  font-family: serif;
+    font-family: serif;
 }
 
 table {
-  border: solid thin #00c;
-  border-collapse: collapse;
+    border: solid thin #00c;
+    border-collapse: collapse;
 }
 
 td,th {
-  border: solid thin #00c;
-  padding: 6px;
+    border: solid thin #00c;
+    padding: 0.5em;
 }
 
 table.invis {
-  padding: 10px;
-  border: none thin #000;
+    padding: 1em;
+    border: none thin #000;
 }
 
 .invis {
-  border: none thin #000;
+    border: none thin #000;
 }
 
 td.center {
-  text-align: center;
+    text-align: center;
 }
 
 th.left {
-  text-align: left;
+    text-align: left;
 }
 
 a:link {
-  color: #ffffff;
-  text-decoration: none;
+    color: #ffffff;
+    text-decoration: none;
 }
 
 a:visited {
-  color: #ff0000;
-  text-decoration: none;
+    color: #ff0000;
+    text-decoration: none;
 }
 
 a:active {
-  color: #ffff00;
+    color: #ffff00;
 }
 
 a:hover {
-  color: #0c0;
+    color: #0c0;
 }
 
 input, textarea, select {
-  color: #ff0;
-  font-weight: bold;
-  background-color: #000;
-  border: solid thin #cc0;
-  padding: 2px;
+    color: #ff0;
+    font-weight: bold;
+    background-color: #000;
+    border: solid thin #cc0;
+    padding: 0.5em;
 }
 
 input:hover, textarea:hover, select:hover {
-  border: solid thin #0c0;
+    border: solid thin #0c0;
 }
 
 option {
-  background-color: #000;
+    background-color: #000;
 }

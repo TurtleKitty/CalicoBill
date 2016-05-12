@@ -1,23 +1,21 @@
-
-
-<div class="place">
+<div class="section">
 
     <div class="place">
-	<a href="{{ path }}/customer/list.html">
-	    Customers
-	</a>
+        <a href="{{ path }}/customer/list.html">
+            Customers
+        </a>
     </div>
 
     <div class="place">
-	<a href="{{ path }}/invoice/list.html">
-	    Invoices
-	</a>
+        <a href="{{ path }}/invoice/list.html">
+            Invoices
+        </a>
     </div>
 
     <div class="place">
-	<a href="{{ path }}/product/list.html">
-	    Products
-	</a>
+        <a href="{{ path }}/product/list.html">
+            Products
+        </a>
     </div>
 
 </div>
